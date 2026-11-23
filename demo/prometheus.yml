@@ -1,0 +1,11 @@
+# Prometheus configuration for the demo (docker compose).
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: vxworks
+    static_configs:
+      # demo/run_target.py --listen 0.0.0.0 forwards the target's port 9100
+      # to the host; host.docker.internal points at the host (see compose).
+      - targets: ["host.docker.internal:9100"]

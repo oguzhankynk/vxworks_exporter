@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: vxworks
+    folder: VxWorks
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

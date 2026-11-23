@@ -1,0 +1,85 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "vx-local",
+      "hidden": true,
+      "description": "Where VxWorks is. VxWorks SDK: WIND_HOME is the unpacked SDK directory. Full VxWorks installation: add WIND_CC_SYSROOT (your VSB), run cmake from a wrenv shell, and set VXEXP_VX_KERNEL to your kernel image.",
+      "environment": {
+        "WIND_HOME": "/opt/wrsdk-vxworks7-qemu-1.18.0"
+      }
+    },
+    {
+      "name": "my-vx-rtp-debug",
+      "displayName": "(local) vx-rtp-debug",
+      "inherits": [
+        "vx-local",
+        "vx-rtp-debug"
+      ]
+    },
+    {
+      "name": "my-vx-rtp-ubsan",
+      "displayName": "(local) vx-rtp-ubsan",
+      "inherits": [
+        "vx-local",
+        "vx-rtp-ubsan"
+      ]
+    },
+    {
+      "name": "my-vx-dkm",
+      "displayName": "(local) vx-dkm",
+      "inherits": [
+        "vx-local",
+        "vx-dkm"
+      ]
+    },
+    {
+      "name": "my-vx-dkm-release",
+      "displayName": "(local) vx-dkm-release",
+      "inherits": [
+        "vx-local",
+        "vx-dkm-release"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "my-vx-rtp-debug",
+      "configurePreset": "my-vx-rtp-debug"
+    },
+    {
+      "name": "my-vx-rtp-ubsan",
+      "configurePreset": "my-vx-rtp-ubsan"
+    },
+    {
+      "name": "my-vx-dkm",
+      "configurePreset": "my-vx-dkm"
+    },
+    {
+      "name": "my-vx-dkm-release",
+      "configurePreset": "my-vx-dkm-release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "my-vx-rtp-debug",
+      "configurePreset": "my-vx-rtp-debug",
+      "inherits": "vx-rtp-debug"
+    },
+    {
+      "name": "my-vx-rtp-ubsan",
+      "configurePreset": "my-vx-rtp-ubsan",
+      "inherits": "vx-rtp-ubsan"
+    },
+    {
+      "name": "my-vx-dkm",
+      "configurePreset": "my-vx-dkm",
+      "inherits": "vx-dkm"
+    },
+    {
+      "name": "my-vx-dkm-release",
+      "configurePreset": "my-vx-dkm-release",
+      "inherits": "vx-dkm-release"
+    }
+  ]
+}

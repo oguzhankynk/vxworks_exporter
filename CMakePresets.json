@@ -1,0 +1,256 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "VXEXP_BUILD_TESTS": "ON",
+        "VXEXP_WARNINGS_AS_ERRORS": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Host: Debug",
+      "description": "Host debug build of the portable core and its tests; warnings as errors.",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Host: Release",
+      "description": "Optimized host build of the portable core and its tests.",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "asan",
+      "displayName": "Host: ASan + UBSan",
+      "description": "Host debug build instrumented with AddressSanitizer and UndefinedBehaviorSanitizer.",
+      "inherits": "debug",
+      "cacheVariables": {
+        "VXEXP_SANITIZER": "address;undefined"
+      }
+    },
+    {
+      "name": "tsan",
+      "displayName": "Host: TSan",
+      "description": "Host debug build instrumented with ThreadSanitizer.",
+      "inherits": "debug",
+      "cacheVariables": {
+        "VXEXP_SANITIZER": "thread"
+      }
+    },
+    {
+      "name": "coverage",
+      "displayName": "Host: Coverage",
+      "description": "Host debug build instrumented with --coverage; 'coverage' target runs ctest + gcovr.",
+      "inherits": "debug",
+      "cacheVariables": {
+        "VXEXP_ENABLE_COVERAGE": "ON"
+      }
+    },
+    {
+      "name": "tidy",
+      "displayName": "Host: clang-tidy",
+      "description": "Host debug build with clang-tidy on the core library.",
+      "inherits": "debug",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang++",
+        "VXEXP_ENABLE_CLANG_TIDY": "ON"
+      }
+    },
+    {
+      "name": "cppcheck",
+      "displayName": "Host: cppcheck",
+      "description": "Host debug build with cppcheck on the core library.",
+      "inherits": "debug",
+      "cacheVariables": {
+        "VXEXP_ENABLE_CPPCHECK": "ON"
+      }
+    },
+    {
+      "name": "vx-base",
+      "hidden": true,
+      "inherits": "base",
+      "description": "VxWorks build. Finds VxWorks through WIND_HOME (the SDK directory) or, for a full installation, WIND_CC_SYSROOT (a VSB). Set them in the shell or in CMakeUserPresets.json (see CMakeUserPresets.json.example).",
+      "toolchainFile": "${sourceDir}/cmake/toolchains/vxworks.cmake",
+      "cacheVariables": {
+        "VX_TARGET_TYPE": "RTP",
+        "VXEXP_BUILD_DOCS": "OFF"
+      }
+    },
+    {
+      "name": "vx-rtp-debug",
+      "displayName": "VxWorks RTP: core tests",
+      "description": "Builds the portable core and its GoogleTest suite as an RTP; ctest runs it on VxWorks in QEMU.",
+      "inherits": "vx-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "vx-rtp-ubsan",
+      "displayName": "VxWorks RTP: UBSan (trap mode)",
+      "description": "vx-rtp-debug with UndefinedBehaviorSanitizer in trap mode.",
+      "inherits": "vx-rtp-debug",
+      "cacheVariables": {
+        "VXEXP_SANITIZER": "undefined"
+      }
+    },
+    {
+      "name": "vx-dkm",
+      "displayName": "VxWorks DKM: exporter module (debug)",
+      "description": "Builds vxworks_exporter.out; ctest runs the self-test and the end-to-end scrape test in QEMU.",
+      "inherits": "vx-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "VX_TARGET_TYPE": "DKM"
+      }
+    },
+    {
+      "name": "vx-dkm-release",
+      "displayName": "VxWorks DKM: exporter module (release)",
+      "description": "Optimized vxworks_exporter.out, the build to deploy.",
+      "inherits": "vx-dkm",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "asan",
+      "configurePreset": "asan"
+    },
+    {
+      "name": "tsan",
+      "configurePreset": "tsan"
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage"
+    },
+    {
+      "name": "tidy",
+      "configurePreset": "tidy"
+    },
+    {
+      "name": "cppcheck",
+      "configurePreset": "cppcheck"
+    },
+    {
+      "name": "vx-rtp-debug",
+      "configurePreset": "vx-rtp-debug"
+    },
+    {
+      "name": "vx-rtp-ubsan",
+      "configurePreset": "vx-rtp-ubsan"
+    },
+    {
+      "name": "vx-dkm",
+      "configurePreset": "vx-dkm"
+    },
+    {
+      "name": "vx-dkm-release",
+      "configurePreset": "vx-dkm-release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 4,
+        "stopOnFailure": false
+      }
+    },
+    {
+      "name": "vx-base",
+      "hidden": true,
+      "inherits": "base",
+      "description": "Each test boots VxWorks in QEMU (a few seconds each, about 2 GB of guest memory).",
+      "execution": {
+        "jobs": 2,
+        "timeout": 600
+      }
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "inherits": "base"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "inherits": "base"
+    },
+    {
+      "name": "asan",
+      "configurePreset": "asan",
+      "inherits": "base"
+    },
+    {
+      "name": "tsan",
+      "configurePreset": "tsan",
+      "inherits": "base"
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage",
+      "inherits": "base"
+    },
+    {
+      "name": "tidy",
+      "configurePreset": "tidy",
+      "inherits": "base"
+    },
+    {
+      "name": "cppcheck",
+      "configurePreset": "cppcheck",
+      "inherits": "base"
+    },
+    {
+      "name": "vx-rtp-debug",
+      "configurePreset": "vx-rtp-debug",
+      "inherits": "vx-base"
+    },
+    {
+      "name": "vx-rtp-ubsan",
+      "configurePreset": "vx-rtp-ubsan",
+      "inherits": "vx-base"
+    },
+    {
+      "name": "vx-dkm",
+      "configurePreset": "vx-dkm",
+      "inherits": "vx-base"
+    },
+    {
+      "name": "vx-dkm-release",
+      "configurePreset": "vx-dkm-release",
+      "inherits": "vx-base"
+    }
+  ]
+}
